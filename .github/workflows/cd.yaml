@@ -18,9 +18,9 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
-      - name: Checkout dev branch
-        run: git checkout dev
+        with:
+          ref: dev
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       - name: Update image tag in manifest
         run: |
