@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   update-manifest:
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
 
     env:
