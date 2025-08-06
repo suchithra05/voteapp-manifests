@@ -3,6 +3,9 @@ name: CD - Update K8s Manifest with New Image Tag
 on:
   repository_dispatch:
     types: [deploy-trigger]
+    
+permissions:
+  contents: write  # Required to push commits
 
 jobs:
   update-manifest:
