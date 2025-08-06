@@ -13,10 +13,13 @@ env:
 jobs:
   update-manifest:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'
 
     steps:
       - name: Checkout manifest repo
         uses: actions/checkout@v3
+        with:
+          ref: dev
 
       - name: Extract SHA from event
         run: echo "Received SHA ${{ github.event.client_payload.image_tag }}"
