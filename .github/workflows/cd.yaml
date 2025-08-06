@@ -19,7 +19,7 @@ jobs:
       - name: Checkout manifest repo
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.client_payload.target_branch }}
+          ref: ref
 
       - name: Extract SHA from event
         run: echo "Received SHA ${{ github.event.client_payload.image_tag }}"
