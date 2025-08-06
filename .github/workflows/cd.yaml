@@ -3,13 +3,12 @@ name: CD - Update K8s Manifest with New Image Tag
 on:
   repository_dispatch:
     types: [deploy-trigger]
-    
+
 permissions:
   contents: write  # Required to push commits
 
 jobs:
   update-manifest:
-    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
 
     env:
@@ -17,11 +16,19 @@ jobs:
       IMAGE_TAG: ${{ github.event.client_payload.image_tag }}
 
     steps:
-      - name: Checkout repo
+      - name: Checkout dev branch
         uses: actions/checkout@v4
         with:
           ref: dev
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - name: Ensure branch is 'dev'
+        run: |
+          BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          if [ "$BRANCH" != "dev" ]; then
+            echo "Not on dev branch. Exiting."
+            exit 1
+          fi
 
       - name: Update image tag in manifest
         run: |
