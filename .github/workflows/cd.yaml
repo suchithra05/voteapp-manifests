@@ -29,8 +29,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config user.name "suchithra05"
+          git config user.email "suchithraee1999@gmail.com"
 
       - name: Commit and push if changes exist
         run: |
