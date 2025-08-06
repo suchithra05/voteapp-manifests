@@ -1,40 +1,42 @@
-name: CD - Update Deployment YAML with SHA
+name: CD - Update K8s Manifest with New Image Tag
 
 on:
   repository_dispatch:
     types: [deploy-trigger]
 
 permissions:
-  contents: write
-
-env:
-  IMAGE_NAME: suchithra05/vote-app
+  contents: write  # Needed to push changes
 
 jobs:
   update-manifest:
     runs-on: ubuntu-latest
-    
+    if: github.event.client_payload.branch == 'dev'
+
+    env:
+      IMAGE_NAME: vote-app
+      IMAGE_TAG: ${{ github.event.client_payload.image_tag }}
+      TARGET_BRANCH: ${{ github.event.client_payload.branch }}
 
     steps:
-      - name: Checkout manifest repo
-        uses: actions/checkout@v3
+        
+      - name: Checkout repo
+        uses: actions/checkout@v4
         with:
-          ref: ref
+          ref: ${{ github.event.client_payload.branch }}
 
-      - name: Extract SHA from event
-        run: echo "Received SHA ${{ github.event.client_payload.image_tag }}"
-
-      - name: Update image tag in flask-vote.yaml
+      - name: Update image tag in manifest
         run: |
-          sed -i "s|\(image: $IMAGE_NAME:\).*|\1${{ github.event.client_payload.image_tag }}|" k8s-manifests/flask-vote.yaml
-          cat k8s-manifests/flask-vote.yaml
+          echo "Updating image tag to $IMAGE_TAG"
+          sed -i "s|image:.*|image: trial1e0fhi.jfrog.io/docker-local/vote-app:${IMAGE_TAG}|" k8s-manifests/flask-vote.yaml
 
-      - name: Commit and push changes
+      - name: Configure Git
         run: |
-          git config --global user.name "suchithra05"
-          git config --global user.email "suchithraee1999@gmail.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git config user.name "suchithra05"
+          git config user.email "suchithraee1999@gmail.com"
+
+      - name: Commit and push if changes exist
+        run: |
           git add k8s-manifests/flask-vote.yaml
-          git diff --cached --quiet || git commit -m "Update image tag to ${{ github.event.client_payload.image_tag }}"
-          git push 
+          git diff --cached --quiet || git commit -m "Update image tag to $IMAGE_TAG"
+          git push origin $TARGET_BRANCH
 
