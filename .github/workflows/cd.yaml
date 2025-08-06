@@ -12,8 +12,9 @@ env:
 
 jobs:
   update-manifest:
+    if: github.event.client_payload.branch == 'dev'
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/dev'
+    
 
     steps:
       - name: Checkout manifest repo
