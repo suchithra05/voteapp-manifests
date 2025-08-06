@@ -5,7 +5,7 @@ on:
     types: [deploy-trigger]
 
 permissions:
-  contents: write  # Required to push commits
+  contents: write  # Needed to push changes
 
 jobs:
   update-manifest:
@@ -14,21 +14,14 @@ jobs:
     env:
       IMAGE_NAME: vote-app
       IMAGE_TAG: ${{ github.event.client_payload.image_tag }}
+      TARGET_BRANCH: ${{ github.event.client_payload.branch }}
 
     steps:
-      - name: Checkout dev branch
+      - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          ref: dev
+          ref: ${{ env.TARGET_BRANCH }}
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-
-      - name: Ensure branch is 'dev'
-        run: |
-          BRANCH=$(git rev-parse --abbrev-ref HEAD)
-          if [ "$BRANCH" != "dev" ]; then
-            echo "Not on dev branch. Exiting."
-            exit 1
-          fi
 
       - name: Update image tag in manifest
         run: |
@@ -44,4 +37,4 @@ jobs:
         run: |
           git add k8s-manifests/flask-vote.yaml
           git diff --cached --quiet || git commit -m "Update image tag to $IMAGE_TAG"
-          git push origin dev
+          git push origin $TARGET_BRANCH
