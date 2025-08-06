@@ -1,1 +1,41 @@
-#
+name: CD - Update Deployment YAML with SHA
+
+on:
+  repository_dispatch:
+    types: [deploy-trigger]
+
+permissions:
+  contents: write
+
+env:
+  IMAGE_NAME: suchithra05/vote-app
+
+jobs:
+  update-manifest:
+    if: github.event.client_payload.branch == 'dev'
+    runs-on: ubuntu-latest
+    
+
+    steps:
+      - name: Checkout manifest repo
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.client_payload.target_branch }}
+
+      - name: Extract SHA from event
+        run: echo "Received SHA ${{ github.event.client_payload.image_tag }}"
+
+      - name: Update image tag in flask-vote.yaml
+        run: |
+          sed -i "s|\(image: $IMAGE_NAME:\).*|\1${{ github.event.client_payload.image_tag }}|" k8s-manifests/flask-vote.yaml
+          cat k8s-manifests/flask-vote.yaml
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "suchithra05"
+          git config --global user.email "suchithraee1999@gmail.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git add k8s-manifests/flask-vote.yaml
+          git diff --cached --quiet || git commit -m "Update image tag to ${{ github.event.client_payload.image_tag }}"
+          git push origin dev
+
