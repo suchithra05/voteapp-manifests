@@ -12,7 +12,6 @@ env:
 
 jobs:
   update-manifest:
-    if: github.event.client_payload.branch == 'dev'
     runs-on: ubuntu-latest
     
 
@@ -37,5 +36,5 @@ jobs:
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git add k8s-manifests/flask-vote.yaml
           git diff --cached --quiet || git commit -m "Update image tag to ${{ github.event.client_payload.image_tag }}"
-          git push origin dev
+          git push 
 
