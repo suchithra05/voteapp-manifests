@@ -39,4 +39,3 @@ jobs:
           git add k8s-manifests/flask-vote.yaml
           git diff --cached --quiet || git commit -m "Update image tag to $IMAGE_TAG"
           git push origin $TARGET_BRANCH
-
