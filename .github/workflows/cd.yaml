@@ -20,7 +20,7 @@ jobs:
       - name: Checkout manifest repo
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.client_payload.target_branch }}
+          ref: "dev"
 
       - name: Extract SHA from event
         run: echo "Received SHA ${{ github.event.client_payload.image_tag }}"
@@ -36,5 +36,5 @@ jobs:
           git config --global user.email "suchithraee1999@gmail.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git add k8s-manifests/flask-vote.yaml
-          git diff --cached --quiet || git commit -m "Update image tag to ${{ github.event.client_payload.image_tag }}"
+          git diff --cached --quiet || git commit -m "Update image tag to ${{ github.event.client_payload.image_tag.target_branch }}"
           git push origin dev
