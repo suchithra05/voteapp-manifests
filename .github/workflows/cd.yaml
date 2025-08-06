@@ -18,15 +18,11 @@ jobs:
       TARGET_BRANCH: ${{ github.event.client_payload.branch }}
 
     steps:
-
-      - name: Print branch
-        run: echo "Triggered branch is ${{ github.event.client_payload.branch }}"
         
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.TARGET_BRANCH }}
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          ref: ${{ github.event.client_payload.branch }}
 
       - name: Update image tag in manifest
         run: |
