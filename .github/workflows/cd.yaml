@@ -10,6 +10,7 @@ permissions:
 jobs:
   update-manifest:
     runs-on: ubuntu-latest
+    if: github.event.client_payload.branch == 'dev'
 
     env:
       IMAGE_NAME: vote-app
@@ -17,6 +18,10 @@ jobs:
       TARGET_BRANCH: ${{ github.event.client_payload.branch }}
 
     steps:
+
+      - name: Print branch
+        run: echo "Triggered branch is ${{ github.event.client_payload.branch }}"
+        
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
