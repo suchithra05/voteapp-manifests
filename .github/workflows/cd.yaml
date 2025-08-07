@@ -10,7 +10,7 @@ permissions:
 jobs:
   update-manifest:
     runs-on: ubuntu-latest
-    if: github.event.client_payload.branch == 'main'
+    
 
     env:
       IMAGE_NAME: vote-app
