@@ -24,6 +24,12 @@ jobs:
         with:
           ref: ${{ github.event.client_payload.branch }}
 
+      - name: checkout target branch
+        run: |
+            git branch 
+            echo "$TARGET_BRANCH"
+            git checkout $TARGET_BRANCH
+
       - name: Update image tag in manifest
         run: |
           echo "Updating image tag to $IMAGE_TAG"
