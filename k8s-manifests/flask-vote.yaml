@@ -25,7 +25,7 @@ spec:
                   - public
       containers:
       - name: voting-app
-        image: trial1e0fhi.jfrog.io/docker-local/vote-app:7ad01bf8413177e0b3d8778b1c5d20da0588abba
+        image: trial1e0fhi.jfrog.io/docker-local/vote-app:1d1b5f7784f61c06f3b0455f4257dd06b361771f
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
